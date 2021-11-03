@@ -9,7 +9,8 @@ Id = imread('lab1/images/napoleon_dark.png');
 Z = imread('lab1/images/zebra.png');
 
 %% 2 - Viewing Images and Saving Images
-imshow(I);
+% Below is one of the example images we will work on.
+imtool(I);
 
 %% 2 - Image Tool
 imtool(I);
@@ -19,30 +20,26 @@ imtool(I);
 I(1, 1)         % It prints out 89
 
 %% 3 - Contrast, Brightness and Datatypes
+% Plot all three different example images. Regular, light and dark.
 imtool(I);
 imtool(Il);
 imtool(Id);
 
-%% 3 Histograms 
-
+%% Q2 - Histograms 
+% From figure 1, which is the regular image, we see that the pixel values
+% are spread across the domain $\[0, 255\]$.
+% The second figure is skewed towards the lighter pixel values and this
+% image should be the high contrast one. The third histogram shows the
+% third image and how it is skewed in the other direction and is thus the
+% histogram of the low contrast image.
 figure(1);
-h1 = histogram(single(I(:)),256);
-h1.BinLimits = [0, 255];
-grid;
+imhist(I);
 
 figure(2);
-h2 = histogram(single(Il(:)),256);
-h2.BinLimits = [0, 255];
-grid;
+imhist(Il);
 
 figure(3);
-h3 = histogram(single(Id(:)),256);
-h3.BinLimits = [0, 255];
-grid;
-
-%% Explore workspace
-whos;
-class(I);
+imhist(Id);
 
 %% See images 
 Is = single(I);

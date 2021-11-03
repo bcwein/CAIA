@@ -39,11 +39,17 @@ Z = imread('lab1/images/zebra.png');
 
 \matlabheading{2 - Viewing Images and Saving Images}
 
+\begin{par}
+\begin{flushleft}
+Below is one of the example images we will work on.
+\end{flushleft}
+\end{par}
+
 \begin{matlabcode}
-imshow(I);
+imtool(I);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_0.png}
+\includegraphics[width=\maxwidth{44.65629703963874em}]{figure_0.png}
 \end{center}
 
 
@@ -75,86 +81,61 @@ ans = 89
 
 \matlabheading{3 - Contrast, Brightness and Datatypes}
 
+\begin{par}
+\begin{flushleft}
+Plot all three different example images. Regular, light and dark.
+\end{flushleft}
+\end{par}
+
 \begin{matlabcode}
 imtool(I);
+imtool(Il);
 \end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_2.png}
 \end{center}
 \begin{matlabcode}
-imtool(Il);
+imtool(Id);
 \end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_3.png}
 \end{center}
-\begin{matlabcode}
-imtool(Id);
-\end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_4.png}
 \end{center}
 
 
-\matlabheading{3 Histograms}
+\matlabheading{Q2 - Histograms}
+
+\begin{par}
+\begin{flushleft}
+From figure 1, which is the regular image, we see that the pixel values are spread across the domain $0,255$. The second figure is skewed towards the lighter pixel values and this image should be the high contrast one. The third histogram shows the third image and how it is skewed in the other direction and is thus the histogram of the low contrast image.
+\end{flushleft}
+\end{par}
 
 \begin{matlabcode}
 figure(1);
-h1 = histogram(single(I(:)),256);
-h1.BinLimits = [0, 255];
-grid;
+imhist(I);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_5.eps}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_5.eps}
 \end{center}
 \begin{matlabcode}
 
 figure(2);
-h2 = histogram(single(Il(:)),256);
-h2.BinLimits = [0, 255];
-grid;
+imhist(Il);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_6.eps}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_6.eps}
 \end{center}
 \begin{matlabcode}
 
 figure(3);
-h3 = histogram(single(Id(:)),256);
-h3.BinLimits = [0, 255];
-grid;
+imhist(Id);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_7.eps}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_7.eps}
 \end{center}
-
-
-\matlabheading{Explore workspace}
-
-\begin{matlabcode}
-whos;
-\end{matlabcode}
-\begin{matlaboutput}
-  Name        Size               Bytes  Class                                        Attributes
-
-  I         368x445             163760  uint8                                                  
-  Id        368x445             163760  uint8                                                  
-  Il        368x445             163760  uint8                                                  
-  Is        368x445             655040  single                                                 
-  J         368x445             163760  uint8                                                  
-  Jnf        78x78                6084  uint8                                                  
-  L         368x445            1310080  double                                                 
-  T           1x256               2048  double                                                 
-  Z         512x512             262144  logical                                                
-  ans         1x1                    1  uint8                                                  
-  g           1x1                    8  double                                                 
-  h1          1x1                    8  matlab.graphics.chart.primitive.Histogram              
-  h2          1x1                    8  matlab.graphics.chart.primitive.Histogram              
-  h3          1x1                    8  matlab.graphics.chart.primitive.Histogram              
-  out       368x445             163760  uint8                                                  
-\end{matlaboutput}
-\begin{matlabcode}
-class(I);
-\end{matlabcode}
 
 
 \matlabheading{See images}
@@ -162,19 +143,17 @@ class(I);
 \begin{matlabcode}
 Is = single(I);
 imtool(I);
+imtool(Is);
 \end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_8.png}
 \end{center}
 \begin{matlabcode}
-imtool(Is);
+imtool(Is/255);
 \end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_9.png}
 \end{center}
-\begin{matlabcode}
-imtool(Is/255);
-\end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_10.png}
 \end{center}
@@ -185,15 +164,13 @@ imtool(Is/255);
 \begin{matlabcode}
 figure(1);
 imtool((I/64)*64);
-\end{matlabcode}
-\begin{center}
-\includegraphics[width=\maxwidth{44.65629703963874em}]{figure_11.png}
-\end{center}
-\begin{matlabcode}
 
 figure(2);
 imtool((Is/64)*64);
 \end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{44.65629703963874em}]{figure_11.png}
+\end{center}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_12.png}
 \end{center}
@@ -203,13 +180,11 @@ imtool((Is/64)*64);
 
 \begin{matlabcode}
 imtool(I + 50);
+imtool(I);
 \end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_13.png}
 \end{center}
-\begin{matlabcode}
-imtool(I);
-\end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_14.png}
 \end{center}
@@ -219,13 +194,11 @@ imtool(I);
 
 \begin{matlabcode}
 imtool(I);
+imtool(I * 0.5);
 \end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_15.png}
 \end{center}
-\begin{matlabcode}
-imtool(I * 0.5);
-\end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{44.65629703963874em}]{figure_16.png}
 \end{center}
@@ -236,17 +209,12 @@ imtool(I * 0.5);
 \begin{matlabcode}
 figure(1);
 imhist(I);
-\end{matlabcode}
-\begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_17.eps}
-\end{center}
-\begin{matlabcode}
 
 figure(2);
 imshow(I);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_18.png}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_17.png}
 \end{center}
 \begin{matlabcode}
 
@@ -256,17 +224,18 @@ out = uint8(L .* (255/max(max(L))));
 
 figure(3);
 imhist(out);
-\end{matlabcode}
-\begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_19.eps}
-\end{center}
-\begin{matlabcode}
 
 figure(4);
 imshow(out);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_20.png}
+\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_18.png}
+\end{center}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_19.eps}
+\end{center}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_20.eps}
 \end{center}
 \begin{matlabcode}
 
@@ -278,7 +247,7 @@ figure(5)
 imhist(out);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_21.eps}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_21.eps}
 \end{center}
 \begin{matlabcode}
 
@@ -297,7 +266,7 @@ figure(1);
 imhist(I);
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_23.eps}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_23.eps}
 \end{center}
 \begin{matlabcode}
 
@@ -305,7 +274,7 @@ figure(2);
 imhist(histeq(I));
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_24.eps}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_24.eps}
 \end{center}
 \begin{matlabcode}
 
@@ -313,7 +282,7 @@ figure(3);
 imhist(histeq(Il));
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_25.eps}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_25.eps}
 \end{center}
 \begin{matlabcode}
 
@@ -330,25 +299,23 @@ imhist(histeq(Id));
 \begin{matlabcode}
 figure(1);
 imshow(I);
-\end{matlabcode}
-\begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_27.png}
-\end{center}
-\begin{matlabcode}
 
 figure(2);
 imshow(histeq(I));
-\end{matlabcode}
-\begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_28.png}
-\end{center}
-\begin{matlabcode}
 
 figure(3);
+\end{matlabcode}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_27.png}
+\end{center}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_28.png}
+\end{center}
+\begin{matlabcode}
 imshow(histeq(Il));
 \end{matlabcode}
 \begin{center}
-\includegraphics[width=\maxwidth{62.117410938283996em}]{figure_29.png}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_29.png}
 \end{center}
 \begin{matlabcode}
 
@@ -455,6 +422,12 @@ imshow(Jnf);
 \end{matlabcode}
 \begin{center}
 \includegraphics[width=\maxwidth{25.28850978424486em}]{figure_40.png}
+\end{center}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_41.png}
+\end{center}
+\begin{center}
+\includegraphics[width=\maxwidth{56.196688409433015em}]{figure_42.png}
 \end{center}
 
 \end{document}

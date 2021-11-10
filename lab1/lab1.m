@@ -6,7 +6,14 @@ I = imread('lab1/images/napoleon.png');
 Il = imread('lab1/images/napoleon_light.png');
 Id = imread('lab1/images/napoleon_dark.png');
 Z = imread('lab1/images/zebra.png');
-
+Is = single(I);
+B1 = imread('lab1/images/brain1.png');
+B2 = imread('lab1/images/brain2.png');
+B3 = imread('lab1/images/brain3.png');
+W = imread('lab1/images/wrench.png');
+D = imread('lab1/images/doggo.jpg');
+D2 = imresize(D, [128,128], 'nearest', 'antialiasing', true);
+GD2 = rgb2gray(D2);
 %% Q1 - Pixel Value
 % Print out value. We see that it is of type UINT-8 and the value is 89.
 I(1, 1)         % It prints out 89
@@ -157,3 +164,87 @@ plot(cumsum(imhist(Id)) / sum(imhist(Id)));
 
 figure
 plot(cumsum(imhist(J)) / sum(imhist(J)));
+
+%% Q8 - Interpolation and low-pass filter
+% The difference between the interpolation methods are not very significant
+% but the difference between performing a low pass filter is quite
+% significant. The backround of the image without the use of a low pass
+% filter is quite noisy whereas with antialiasing the the background is
+% more homogenous and resembles the original image better.
+Jnf = imresize(I, [78,78], 'nearest', 'antialiasing', false);
+Jnt = imresize(I, [78,78], 'nearest', 'antialiasing', true);
+Jbf = imresize(I, [78,78], 'bilinear', 'antialiasing', false);
+Jbt = imresize(I, [78,78], 'bilinear', 'antialiasing', true);
+
+imtool(Jnf);
+imtool(Jnt);
+imtool(Jbf);
+imtool(Jbt);
+
+%% Q9 - Aliasing
+% Aliasing is a general problem when sampling a signal and when several
+% signals is indistinguishable when sampled. This could be for example when
+% trying to sample an audiosignal and interpolating it and different
+% possible frequencies are available.
+
+%% Q10/Q11 - Mean Image
+Mn = (B1 + B2)/2;
+imtool(Mn - B3);
+
+%% Q13 - Geometric Transforms
+J = imrotate(W, 20);
+K = imrotate(W, 20, 'bilinear');
+
+imtool(J);
+imtool(K);
+
+%% Q15 - Scripting and Looping
+newI = zeros(130,130,'uint8');
+GD2t = padarray(GD2, [2, 2], 0);
+
+for i = 3:130
+    for j = 3:130
+        sum = uint16(0);
+        for k = 1:5
+            for l = 1:5
+                sum = sum + uint16(GD2t(i+k-3, j+l-3));
+            end
+        end
+        newI(i,j) = uint8(sum/25);
+    end
+end
+
+Image = newI(3:130, 3:130);
+
+imtool(GD2);
+imtool(Image);
+imtool(Image-GD2);
+
+%% Q16 - Histogram Equation
+f = myhist(GD2);
+
+% Show Original Image
+figure(1);
+imshow(GD2);
+
+% Show Equalised Image using myhist
+figure(2);
+imshow(f);
+
+% Show Equalized Image histogram using myhist
+figure(3);
+imhist(GD2);
+
+% Show Equalized Image histogram using myhist
+figure(4);
+imhist(f);
+
+function f = myhist(image)
+    Ihist = hist(reshape(image.',1,[]), 0:255);
+    T = cumsum(Ihist);
+    norm = T(256);
+    figure(5);
+    plot(T);
+    Tn = uint8(T*255 / norm);
+    f = Tn(image);
+end

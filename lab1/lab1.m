@@ -2,6 +2,7 @@
 %
 % Load the data that we will use.
 %
+clear;
 I = imread('lab1/images/napoleon.png');
 Il = imread('lab1/images/napoleon_light.png');
 Id = imread('lab1/images/napoleon_dark.png');
@@ -25,17 +26,17 @@ I(1, 1)         % It prints out 89
 % image should be the high contrast one. The third histogram shows the
 % third image and how it is skewed in the other direction and is thus the
 % histogram of the low contrast image.
-figure(1);
+figure;
 imhist(I);
 
-figure(2);
+figure;
 imhist(Il);
 
-figure(3);
+figure;
 imhist(Id);
 
 %% Q3 - Explain differences
-% The problem here is that when imtool gets passed a uint image it is able
+% The problem here is that when imshow gets passed a uint image it is able
 % to adjust the visualisation range between 0 and 255 but when it gets
 % passed a single precision matrix, which has values from 0 to 255, it
 % tries to plot it as a image with values between 0 and 1. Therefore it
@@ -44,81 +45,81 @@ imhist(Id);
 % assignment. We see that in the UINT8 one there is considerable difference
 % between the two and this is related to doingh arithmetic on UINT8
 % variables.
-imtool(I - (I/64)*64);
-imtool((I/64)*64);
+imshow(I - (I/64)*64);
+imshow((I/64)*64);
 
-imtool((Is/255) - (Is/64)*64/255);
-imtool((Is/64)*64/255);
+imshow((Is/255) - (Is/64)*64/255);
+imshow((Is/64)*64/255);
 
 %% Q4 - Make images brighter
 % To make images brighter. The take the original image $f(x,y)$ and apply
 % the trasform $T = f(x,y) + C$ where $C > 1$.
-imtool(I + 50);
-imtool(I);
+imshow(I + 50);
+imshow(I);
 
 %% Q5 - Make images lower contrast
 % To make the image lower contrast we apply the transform $T =
 % f(x,y) \times C$ where $C < 1$
-imtool(I);
-imtool(I * 0.5);
+imshow(I);
+imshow(I * 0.5);
 
 %% Q6 - Pixel Wise Transforms
 % Below we have perfomred a gamma transform which is $T = C \times
 % f(x,y)^\gamma$ where $C = 1$ and $gamma \in {0.5, 2$. We also compare
 % this with the original image.
-figure(1);
+figure;
 imhist(I);
 
-figure(2);
+figure;
 imshow(I);
 
 g = 0.5;
 L = double(I).^g;
 out = uint8(L .* (255/max(max(L))));
 
-figure(3);
+figure;
 imhist(out);
 
-figure(4);
+figure;
 imshow(out);
 
 g = 2;
 L = double(I).^g;
 out = uint8(L .* (255/max(max(L))));
 
-figure(5)
+figure;
 imhist(out);
 
-figure(6);
+figure;
 imshow(out);
 
 %% Q7 - Histogram Equalization napoleon - Histogram
 % Below is the histograms of the original image, and the original, light
 % and dark image and their equalized histograms.
-figure(1);
+figure;
 imhist(I);
 
-figure(2);
+figure;
 imhist(histeq(I));
 
-figure(3);
+figure;
 imhist(histeq(Il));
 
-figure(4);
+figure;
 imhist(histeq(Id));
 
 %% Q7 - Histogram Equalization napoleon - Images
 % Here we show the equalised images.
-figure(1);
+figure;
 imshow(I);
 
-figure(2);
+figure;
 imshow(histeq(I));
 
-figure(3);
+figure;
 imshow(histeq(Il));
 
-figure(4);
+figure;
 imshow(histeq(Id));
 
 %% Q7 - Histogram, transform and cumulative histogram - Regular Image
@@ -176,10 +177,10 @@ Jnt = imresize(I, [78,78], 'nearest', 'antialiasing', true);
 Jbf = imresize(I, [78,78], 'bilinear', 'antialiasing', false);
 Jbt = imresize(I, [78,78], 'bilinear', 'antialiasing', true);
 
-imtool(Jnf);
-imtool(Jnt);
-imtool(Jbf);
-imtool(Jbt);
+imshow(Jnf);
+imshow(Jnt);
+imshow(Jbf);
+imshow(Jbt);
 
 %% Q9 - Aliasing
 % Aliasing is a general problem when sampling a signal and when several
@@ -189,14 +190,14 @@ imtool(Jbt);
 
 %% Q10/Q11 - Mean Image
 Mn = (B1 + B2)/2;
-imtool(Mn - B3);
+imshow(Mn - B3);
 
 %% Q13 - Geometric Transforms
 J = imrotate(W, 20);
 K = imrotate(W, 20, 'bilinear');
 
-imtool(J);
-imtool(K);
+imshow(J);
+imshow(K);
 
 %% Q15 - Scripting and Looping
 newI = zeros(130,130,'uint8');
@@ -216,34 +217,33 @@ end
 
 Image = newI(3:130, 3:130);
 
-imtool(GD2);
-imtool(Image);
-imtool(Image-GD2);
+imshow(GD2);
+imshow(Image);
+imshow(Image-GD2);
 
 %% Q16 - Histogram Equation
 f = myhist(GD2);
 
 % Show Original Image
-figure(1);
+figure;
 imshow(GD2);
 
 % Show Equalised Image using myhist
-figure(2);
+figure;
 imshow(f);
 
 % Show Equalized Image histogram using myhist
-figure(3);
+figure;
 imhist(GD2);
 
 % Show Equalized Image histogram using myhist
-figure(4);
+figure;
 imhist(f);
 
 function f = myhist(image)
     Ihist = hist(reshape(image.',1,[]), 0:255);
     T = cumsum(Ihist);
     norm = T(256);
-    figure(5);
     plot(T);
     Tn = uint8(T*255 / norm);
     f = Tn(image);

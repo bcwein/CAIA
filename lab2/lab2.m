@@ -1,6 +1,7 @@
 %% Read Data
 clear;
 camera = imread('lab2/images_lab2/cameraman.png');
+wagon = imread('lab2/images_lab2/wagon.png');
 
 %% Q1 - Different Kernels
 % We will apply three different kernels in the spatial domain with one
@@ -100,3 +101,45 @@ msharpcamera31 = imfilter(camera, h6);
 
 figure;
 imshow(msharpcamera31);
+
+%% Q2 -  Low Pass Filters
+% In fspecial we have the filters *average*, *disk* and *gaussian*. All of
+% which are instances of low-pass filters. They calculate new pixel values
+% by incorporating neighbouring pixel values and "average" the rapid
+% changes. The *average* filter does this by calculating the sample mean of
+% the defined neighbourhood, disk uses thhe same notion but uses a circular
+% notion of distance from the center and the gaussian uses a gaussian
+% distribution where pixels far away affect the new pixel value less.
+
+%% Q3 - Construct new filters from simple arithmetic.
+% A low pass filter can be denoted $lp(x, y)$. We know from the textbook
+% that a high-pass image $hp(x,y) = \delta(x, y) - lp(x, y)$ i.e
+% subtracting a low pass from the original image. 
+imshow(camera - gausscamera31);
+
+%%
+% A bandreject filter is a
+% original image minus a low pass and a high pass filter. But since we have
+% defined the highpass filter in terms of a low pass, we can also define
+% bandreject from only low pass filters.
+
+imshow(camera - (gausscamera31 + (camera - meancamera31)));
+
+%% Q4 - The Sobel Filter
+% Lets apply the filter on the cameraman image. Since this is a directional
+% kernel, some arithmetic must be done on the two images.
+h7 = fspecial('sobel');
+camerasobelx = imfilter(double(camera), h7);
+camerasobely = imfilter(double(camera), h7');
+
+figure;
+imshow(uint8(sqrt(camerasobelx.^2 + camerasobely.^2)));
+
+%%
+% We also do the same of the wagon image
+
+wagonsobelx = imfilter(double(wagon), h7);
+wagonsobely = imfilter(double(wagon), h7');
+
+figure;
+imshow(uint8(sqrt(wagonsobelx.^2 + wagonsobely.^2)));

@@ -1,4 +1,5 @@
 %% Read Data
+clear;
 camera = imread('lab2/images_lab2/cameraman.png');
 
 %% Q1 - Different Kernels

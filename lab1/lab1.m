@@ -21,7 +21,7 @@ I(1, 1)         % It prints out 89
 
 %% Q2 - Histograms 
 % From figure 1, which is the regular image, we see that the pixel values
-% are spread across the domain $\[0, 255\]$.
+% are spread across the domain $[0, 255]$.
 % The second figure is skewed towards the lighter pixel values and this
 % image should be the high contrast one. The third histogram shows the
 % third image and how it is skewed in the other direction and is thus the

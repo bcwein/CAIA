@@ -15,6 +15,7 @@ W = imread('lab1/images/wrench.png');
 D = imread('lab1/images/doggo.jpg');
 D2 = imresize(D, [128,128], 'nearest', 'antialiasing', true);
 GD2 = rgb2gray(D2);
+
 %% Q1 - Pixel Value
 % Print out value. We see that it is of type UINT-8 and the value is 89.
 I(1, 1)         % It prints out 89
@@ -45,15 +46,21 @@ imhist(Id);
 % assignment. We see that in the UINT8 one there is considerable difference
 % between the two and this is related to doingh arithmetic on UINT8
 % variables.
-imshow(I - (I/64)*64);
-imshow((I/64)*64);
+figure;
+imagesc(I - (I/64)*64);
 
-imshow((Is/255) - (Is/64)*64/255);
-imshow((Is/64)*64/255);
+figure;
+imagesc((I/64)*64);
+
+figure;
+imagesc((Is/255) - (Is/64)*64/255);
+
+figure;
+imagesc((Is/64)*64/255);
 
 %% Q4 - Make images brighter
 % To make images brighter. The take the original image $f(x,y)$ and apply
-% the trasform $T = f(x,y) + C$ where $C > 1$.
+% the trasform $T = f(x,y) + C$ where $C \geq 0$.
 imshow(I + 50);
 imshow(I);
 
@@ -65,7 +72,7 @@ imshow(I * 0.5);
 
 %% Q6 - Pixel Wise Transforms
 % Below we have perfomred a gamma transform which is $T = C \times
-% f(x,y)^\gamma$ where $C = 1$ and $gamma \in {0.5, 2$. We also compare
+% f(x,y)^\gamma$ where $C = 1$ and $\gamma \in {0.5, 2}$. We also compare
 % this with the original image.
 figure;
 imhist(I);
@@ -177,11 +184,17 @@ Jnt = imresize(I, [78,78], 'nearest', 'antialiasing', true);
 Jbf = imresize(I, [78,78], 'bilinear', 'antialiasing', false);
 Jbt = imresize(I, [78,78], 'bilinear', 'antialiasing', true);
 
+figure;
 imshow(Jnf);
-imshow(Jnt);
-imshow(Jbf);
-imshow(Jbt);
 
+figure;
+imshow(Jnt);
+
+figure;
+imshow(Jbf);
+
+figure;
+imshow(Jbt);
 %% Q9 - Aliasing
 % Aliasing is a general problem when sampling a signal and when several
 % signals is indistinguishable when sampled. This could be for example when
@@ -189,17 +202,26 @@ imshow(Jbt);
 % possible frequencies are available.
 
 %% Q10/Q11 - Mean Image
-Mn = (B1 + B2)/2;
-imshow(Mn - B3);
+Mn = double(B1)/2 + double(B2)/2;
+figure;
+imagesc(Mn);
+
+figure;
+imagesc(Mn - double(B3));
 
 %% Q13 - Geometric Transforms
 J = imrotate(W, 20);
 K = imrotate(W, 20, 'bilinear');
 
+figure;
 imshow(J);
+
+figure;
 imshow(K);
 
 %% Q15 - Scripting and Looping
+% Below is the implementation using zero padding of the images.
+% Therefore the loop goes from 3 to 130.
 newI = zeros(130,130,'uint8');
 GD2t = padarray(GD2, [2, 2], 0);
 
@@ -217,34 +239,66 @@ end
 
 Image = newI(3:130, 3:130);
 
+%%
+% The Original Greyscale Image
+figure;
 imshow(GD2);
+
+%%
+% The Filtered Greyscale Image
+figure;
 imshow(Image);
+
+%%
+% The Original minus the filtered image.
+figure;
 imshow(Image-GD2);
 
 %% Q16 - Histogram Equation
+%
 f = myhist(GD2);
+g = histeq(GD2);
 
-% Show Original Image
-figure;
+%% 
+% Show Original Image.
 imshow(GD2);
 
-% Show Equalised Image using myhist
+%%
+% Show equalized image using myhist.
 figure;
 imshow(f);
 
-% Show Equalized Image histogram using myhist
+%%
+% Show equalized image using matlabs histeq.
+figure;
+imshow(g);
+
+%%
+% Show image histogram.
 figure;
 imhist(GD2);
 
-% Show Equalized Image histogram using myhist
+%%
+% Show Equalized Image histogram using myhist.
 figure;
 imhist(f);
 
+%%
+% Show equalized image histogram using matlabs histeq.
+figure;
+imhist(g);
+
+%%
+%
+close all;
+clear;
+
+%%
+%
 function f = myhist(image)
     Ihist = hist(reshape(image.',1,[]), 0:255);
     T = cumsum(Ihist);
     norm = T(256);
-    plot(T);
-    Tn = uint8(T*255 / norm);
+    Tn = uint8(double(T)*255 / norm);
     f = Tn(image);
 end

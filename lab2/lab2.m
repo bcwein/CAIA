@@ -287,20 +287,24 @@ im
 
 %% Q12 - Filter Cameraman
 %
-r = 30;
+% We add a circular filter and only pass low frequencies.
+% Below is the image before filtering
 cameraFFT = camera(1:255, 1:255);
 figure; imagesc(cameraFFT); colormap(gray); colorbar();
-f = fftshift(fft2(cameraFFT));
 
+%%
+% And we filter out the high frequencies.
+r = 30;
+f = fftshift(fft2(cameraFFT));
 [xgrid, ygrid] = meshgrid(1:size(f,2), 1:size(f,1));
 mask = ((xgrid-128).^2 + (ygrid-128).^2) >= r.^2;
 f(mask) = 0;
-
 figure; imagesc(log(abs(f))); colormap(gray); colorbar();
 
+%%
+% And finally we reconstruct the image.
 newim = ifft2(ifftshift(f));
 figure; imagesc(newim); colormap(gray); colorbar();
-
 
 %% Q13 - 
 %%

@@ -287,19 +287,22 @@ im
 
 %% Q12 - Filter Cameraman
 %
-figure; imagesc(camera); colormap(gray); colorbar();
+r = 30;
+cameraFFT = camera(1:255, 1:255);
+figure; imagesc(cameraFFT); colormap(gray); colorbar();
+f = fftshift(fft2(cameraFFT));
 
-f = fftshift(fft2(camera));
-f(1:100, 1:end) = 0;
-f(end-100:end, 1:end) = 0;
-f(1:end, end-100:end) = 0;
-f(1:end, 1:100) = 0;
+[xgrid, ygrid] = meshgrid(1:size(f,2), 1:size(f,1));
+mask = ((xgrid-128).^2 + (ygrid-128).^2) >= r.^2;
+f(mask) = 0;
 
 figure; imagesc(log(abs(f))); colormap(gray); colorbar();
 
 newim = ifft2(ifftshift(f));
-figure; imagesc(abs(newim)); colormap(gray); colorbar();
+figure; imagesc(newim); colormap(gray); colorbar();
 
+
+%% Q13 - 
 %%
 % Close all figures
 close all;
@@ -325,26 +328,4 @@ function m = mymedianfilt(img)
         end
     end
     m = newI;
-end
-
-% PaddedSize
-function PQ = paddedsize(AB, CD, PARAM)    
-    if nargin == 1 
-        PQ = 2*AB; 
-    elseif nargin == 2 && -ischar(CD) 
-        PQ = AB + CD - 1;   
-        PQ = 2*ceil(PQ/2); 
-    elseif nargin == 2 
-        m = max(AB);  %  Maximum  dimension. 
-
-        %  Find  power-of-2 at least twice m.   
-        P = 2^nextpow2(2*m); 
-        PQ  =  [P,P]; 
-    elseif (nargin == 3) && strcmpi(PARAM, 'pwr2') 
-        m  =  max([AB CD]);  %  Maximum  dimension. 
-        P  =  2^nextpow2(2*m); 
-        PQ  =  [P, P]; 
-    else 
-        error('Wrong number of inputs.')
-    end
 end

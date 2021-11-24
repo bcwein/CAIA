@@ -306,7 +306,43 @@ figure; imagesc(log(abs(f))); colormap(gray); colorbar();
 newim = ifft2(ifftshift(f));
 figure; imagesc(newim); colormap(gray); colorbar();
 
-%% Q13 - 
+%% Q13 - Filtering out patterns
+% The image we will filter is shown below.
+freqdist = double(imread('lab2/images_lab2/freqdist.png'));
+freqdist = freqdist(1:255, 1:255);
+figure; imagesc(freqdist); colormap(gray); colorbar();
+
+%%
+% Frequency representation of image. We see some artifacts. Lets try to
+% remove them.
+f = fftshift(fft2(freqdist));
+figure; imagesc(log(abs(f))); colormap(gray); colorbar(); 
+
+%%
+% Remove unwanted pattern. We do this by removing all regions that light up
+% besides the two points on the diagonal. That is the wave pattern we want
+% to keep.
+f = fftshift(fft2(freqdist));
+figure; imagesc(log(abs(f))); colormap(gray); colorbar(); 
+f(99:101, 1:105) = 0;
+f(:, 90:92) = 0;
+f(end-101+1:end-99+1, end-105+1:end) = 0;
+f(:, end-92+1:end-90+1) = 0;
+f(1:95, 107:109) = 0;
+f(end-95+1:end, end-109+1:end-107+1) = 0;
+f(105:end, 107:109) = 0;
+f(1:end-105+1, end-109+1:end-107+1) = 0;
+f(99:101, 110:end) = 0;
+f(end-101+1:end-99+1, 1:end-110+1) = 0;
+f(1:99, 128) = 0;
+f(end-99+1:end, 128) = 0;
+figure; imagesc(log(abs(f))); colormap(gray);
+
+%%
+% And lastly we show the image that has been reconstructed.
+newim = ifft2(ifftshift(f));
+figure; imagesc(newim); colormap(gray); colorbar();
+
 %%
 % Close all figures
 close all;

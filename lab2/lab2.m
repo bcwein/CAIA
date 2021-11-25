@@ -82,15 +82,11 @@ colormap(gray);
 colorbar;
 
 %% 
-% For a sharpening (high pass) filter, we will use a unsharp masking of 
-% the mean filter for different sizes. Below we do this for a $3 \times 3$
-% unsharping mean filter.
+% For a sharpening (high pass) filter, we will use a unsharp masking using imsharpen function. Below we do this for a $3 \times 3$
+% filter.
 siz = 3;
-h4 = fspecial('average', siz);
-h4 = h4 * -1;
-h4(siz - floor(siz/2), siz - floor(siz/2)) = h4(siz - floor(siz/2), siz - floor(siz/2)) + 1;
 
-msharpcamera3 = imfilter(camera, h4);
+msharpcamera3 = imsharpen(camera, 'Radius',siz);
 
 figure;
 imagesc(msharpcamera3);
@@ -100,11 +96,8 @@ colorbar;
 %%
 % And once again for the mask of size $7 \times 7$
 siz = 7;
-h5 = fspecial('average', siz);
-h5 = h5 * -1;
-h5(siz - floor(siz/2), siz - floor(siz/2)) = h5(siz - floor(siz/2), siz - floor(siz/2)) + 1;
 
-msharpcamera7 = imfilter(camera, h5);
+msharpcamera7 = imsharpen(camera, 'Radius',siz);
 
 figure;
 imagesc(msharpcamera7);
@@ -114,11 +107,8 @@ colorbar;
 %%
 % And lastly, one last time for the mask of size $31 \times 31£
 siz = 31;
-h6 = fspecial('average', siz);
-h6 = h6 * -1;
-h6(siz - floor(siz/2), siz - floor(siz/2)) = h6(siz - floor(siz/2), siz - floor(siz/2)) + 1;
 
-msharpcamera31 = imfilter(camera, h6);
+msharpcamera31 = imsharpen(camera, 'Radius',siz);
 
 figure;
 imagesc(msharpcamera31);
@@ -136,27 +126,21 @@ colorbar;
 
 %% Q3 - Construct new filters from simple arithmetic.
 % A low pass filter can be denoted $lp(x, y)$. We know from the textbook
-% that a high-pass image $hp(x,y) = \delta(x, y) - lp(x, y)$ i.e
-% subtracting a low pass from the original image. 
-imagesc(camera - gausscamera3);
+% that a high-pass filter may be constracted by substracting lowband filter
+% from identity filter;
+flowpass = fspecial('gaussian',3);
+fhighpass = -flowpass;
+fhighpass(2,2) = fhighpass(2,2)+1;
+imagesc(imfilter(camera,fhighpass));
 colormap(gray);
 colorbar;
 
 %%
-% A bandreject filter is a
-% original image minus a low pass and a high pass filter. But since we have
-% defined the highpass filter in terms of a low pass, we can also define
-% bandreject from only low pass filters.
+% Low pass filter removes high frequencies and high pass filter removes 
+% low frequencies. Therefore we can create a band pass filter by applying 
+% both low and high pass filter to an image
 
-imagesc(camera - (gausscamera3 + (camera - meancamera7)));
-colormap(gray);
-colorbar;
-
-%%
-% A bandpass filter is a
-% original image minus a bandreject.
-
-imagesc(camera - (camera - (gausscamera3 + (camera - meancamera7))));
+imagesc(imfilter(imfilter(camera,flowpass),fhighpass));
 colormap(gray);
 colorbar;
 
@@ -244,7 +228,8 @@ colorbar;
 % 
 % The median filter is a nonlinear filter and specifically an
 % order-statistic filter. Which means that before calculating the new pixel
-% value, the pixel values in the neighbourhood must be sorted.
+% value, the pixel values in the neighbourhood must be sorted and it can't
+% be applied as a conv matrix filter.
 
 %% Q8 - Median Filter Implementation
 % Below is my implementation of a median filter.
@@ -254,6 +239,28 @@ figure;
 imagesc(m);
 colormap(gray);
 colorbar();
+
+% Median Filter
+% function m = mymedianfilt(img)
+%     [a, b] = size(img);
+%     newI = zeros(a, b,'double');
+%     padded = padarray(img, [1, 1], median(img(:)));
+% 
+%     for i = 2:a
+%         for j = 2:b
+%             med = zeros(1, 9, 'double');
+%             it = 0;
+%             for k = 1:3
+%                for l = 1:3
+%                    it = it + 1;
+%                    med(it) = padded(i+k-1, j+l-1);
+%                end
+%             end
+%             newI(i,j) = median(med);
+%         end
+%     end
+%     m = newI;
+% end
 
 %% Q9
 % You get a black border due to MATLAB having to access pixel values
@@ -272,14 +279,18 @@ figure; imagesc(log(abs(f))); colormap(gray); colorbar();
 %% Q11 - FFT and IFFT properties
 % We see that the transform below has symmetric values.
 f = fftshift(fft2(rand(1,5)));
-f
+f;
 
 %%
-% Now we will do sme filtering. We set $f(1, 2) = 0$
+% Now we will do some filtering. We set $f(1, 2) = 0$
 f(1, 2) = 0;
+im = ifft2(ifftshift(f));
+im;
+
+% Now we will do the filtering symmetrically. We set $f(1, 4) = 0$
 f(1, 4) = 0;
 im = ifft2(ifftshift(f));
-im
+im;
 
 %%
 % We see that if we dont filter symmetrically, we get a complex valued
@@ -319,23 +330,19 @@ f = fftshift(fft2(freqdist));
 figure; imagesc(log(abs(f))); colormap(gray); colorbar(); 
 
 %%
-% Remove unwanted pattern. We do this by removing all regions that light up
-% besides the two points on the diagonal. That is the wave pattern we want
-% to keep.
+% Remove unwanted pattern. We do this by removing all bright lines
+% which relate to the regular pattern that we see on the image. 
+% That is the wave pattern we want to keep.
 f = fftshift(fft2(freqdist));
 figure; imagesc(log(abs(f))); colormap(gray); colorbar(); 
-f(99:101, 1:105) = 0;
-f(:, 90:92) = 0;
-f(end-101+1:end-99+1, end-105+1:end) = 0;
-f(:, end-92+1:end-90+1) = 0;
-f(1:95, 107:109) = 0;
-f(end-95+1:end, end-109+1:end-107+1) = 0;
-f(105:end, 107:109) = 0;
-f(1:end-105+1, end-109+1:end-107+1) = 0;
-f(99:101, 110:end) = 0;
-f(end-101+1:end-99+1, 1:end-110+1) = 0;
-f(1:99, 128) = 0;
-f(end-99+1:end, 128) = 0;
+f(95:103,1:255) = 0;
+f(153:161,1:255) = 0;
+f(1:255,104:111) = 0;
+f(1:255,end-111+1:end-104+1) = 0;
+f(1:255,88:95) = 0;
+f(1:255,end-95+1:end-88+1) = 0;
+f(1:100,128:128) = 0;
+f(156:end,128:128) = 0;
 figure; imagesc(log(abs(f))); colormap(gray);
 
 %%

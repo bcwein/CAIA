@@ -24,7 +24,7 @@ figure; imagesc(bI), colormap(gray); colorbar();
 
 %% Erode images
 % Some of the coins are overlapping and we will have to do some erosion.
-se = strel('disk', 5);
+se = strel('disk', 17);
 beI = imerode(bI, se);
 figure; imagesc(beI); colormap(gray); colorbar();
 
@@ -33,3 +33,24 @@ figure; imagesc(beI); colormap(gray); colorbar();
 Ilabel = bwlabel(beI, 4);
 figure; imshow(label2rgb(Ilabel, 'spring'));
 
+%% Extract features from image.
+%
+F = regionprops('Table', Ilabel);
+
+%% Plot centroids of image
+% We see that the we have problems with the centroids 
+figure;
+imshow(I);
+axis image; % Make sure image is not artificially stretched because of screen's aspect ratio.
+hold on;
+numberOfBoundaries = size(F.Centroid, 1);
+for k = 1 : numberOfBoundaries
+	plot(floor(F.Centroid(k, 1)), floor(F.Centroid(k, 2)), 'r+', 'MarkerSize', 30, 'LineWidth', 2);
+end
+hold off;
+
+%%
+% Plot histogram of areas
+
+A = [F.Area];
+hist(A);

@@ -131,6 +131,7 @@ colorbar;
 flowpass = fspecial('gaussian',3);
 fhighpass = -flowpass;
 fhighpass(2,2) = fhighpass(2,2)+1;
+figure;
 imagesc(imfilter(camera,fhighpass));
 colormap(gray);
 colorbar;
@@ -140,10 +141,10 @@ colorbar;
 % low frequencies. Therefore we can create a band pass filter by applying 
 % both low and high pass filter to an image
 
+figure;
 imagesc(imfilter(imfilter(camera,flowpass),fhighpass));
 colormap(gray);
 colorbar;
-
 %% Q4 - The Sobel Filter
 % Lets apply the filter on the cameraman image. Since this is a directional
 % kernel, some arithmetic must be done on the two images.

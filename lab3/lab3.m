@@ -1,9 +1,11 @@
+%% Computer Exercise 3 -  Group 17
+
 %% Load Image
 %
-% Let's read the image and plot it
+% Let's read the image and plot it.
 clear;
 I = imread('lab3/images/coins.tif');
-figure; imagesc(I); colormap(gray); colorbar();
+figure; imshow(I);
 
 %% Plot image histogram
 % Let's plot the histogram as well.
@@ -19,38 +21,42 @@ figure; imhist(I);
 % Additionally, we apply a median filter with medfilt2 to remove the white
 % noise in the coins.
 T = graythresh(I);
-bI = medfilt2(~im2bw(I, T));
-figure; imagesc(bI), colormap(gray); colorbar();
+bI = medfilt2(im2bw(I, T));
+figure; imshow(bI);
 
-%% Erode images
-% Some of the coins are overlapping and we will have to do some erosion.
-se = strel('disk', 17);
-beI = imerode(bI, se);
-figure; imagesc(beI); colormap(gray); colorbar();
+%% Apply dist transform to detect coins centers
+% To try to identify coin centers. We will use the dist transform. The
+% function bwdist gives us a distance transformed binary image. Since we
+% dont pass any other arguments to the method. Euclidean distance is used.
+figure;
+Idist = bwdist(bI);
+imshow(mat2gray(Idist));
+
+%% Remove small noisy max values for watershed
+% 
+figure;
+Idistext = imextendedmax(Idist,3);
+imshow(Idistext);
+
+%% Apply watershed filter to isolate objects.
+%
+figure;
+Idistext = -Idistext;
+Idistext(bI) = Inf;
+Iwshed = watershed(Idistext,8);
+Iwshed(bI) = 0;
+imshow(Iwshed);
 
 %% Label Objects
-% 
-Ilabel = bwlabel(beI, 4);
-figure; imshow(label2rgb(Ilabel, 'spring'));
-
-%% Extract features from image.
-%
-F = regionprops('Table', Ilabel);
-
-%% Plot centroids of image
-% We see that the we have problems with the centroids 
+% Now we have to label the coins in the image. This can be done with
+% bwlabel.
 figure;
-imshow(I);
-axis image; % Make sure image is not artificially stretched because of screen's aspect ratio.
-hold on;
-numberOfBoundaries = size(F.Centroid, 1);
-for k = 1 : numberOfBoundaries
-	plot(floor(F.Centroid(k, 1)), floor(F.Centroid(k, 2)), 'r+', 'MarkerSize', 30, 'LineWidth', 2);
-end
-hold off;
+Ilabel = bwlabel(Iwshed);
+Irgb = label2rgb(Ilabel,'spring');
+imshow(Irgb);
 
-%%
-% Plot histogram of areas
-
-A = [F.Area];
-hist(A);
+%% Lastly, find properties of objects
+figure;
+F = regionprops(Ilabel,'all');
+Areas = [F.Area];
+hist(Areas,100);

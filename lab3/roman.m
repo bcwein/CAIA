@@ -113,7 +113,7 @@ Idist = bwdist(bI);
 imshow(mat2gray(Idist));
 
 %% Do the last steps on the bacteria image.
-% We are also successful in labeling the bin
+% We are also successful in labeling the objects
 figure;
 Idistext = imextendedmax(Idist, 3);
 imshow(Idistext);

@@ -33,13 +33,17 @@ Idist = bwdist(bI);
 imshow(mat2gray(Idist));
 
 %% Remove small noisy max values for watershed
-% (Not 100% certain on what to add here)
+% Watershed is starting from all local max values which creates additional
+% small objects on overlapping coins. This is used to avoid watershed
+% transform to start in between the overlapping coins
 figure;
 Idistext = imextendedmax(Idist, 3);
 imshow(Idistext);
 
 %% Apply watershed filter to isolate objects.
-% (Not 100% certain what to add here)
+% We use the watershed filter (*watershed)* to do the segmentation of the coins. We have
+% to invert the image to start from the centers of the coins and not on the
+% background.
 figure;
 Idistext = -Idistext;
 Idistext(bI) = Inf;
@@ -133,7 +137,7 @@ hist(Areas, 20);
 
 %% Discussion on bacteria implementation
 % The method developed for coins also works quite well. But as discussed
-% above, the histogram is not well seperated. This means that the
-% segmentation could negatively affected, which is exactly what we observe.
-% Using other threshold methods may improve the code above.
-
+% above, the histogram is not well separated. This means that the
+% segmentation produces some unrelevant objects from the background.
+% Using other threshold methods or filtering the background 
+% may improve the code above.

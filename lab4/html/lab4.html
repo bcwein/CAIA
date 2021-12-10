@@ -1,0 +1,205 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Computer Exercise 4 - Group 17</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-10"><meta name="DC.source" content="lab4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Computer Exercise 4 - Group 17</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Load Data</a></li><li><a href="#2">Scatterplot of the data</a></li><li><a href="#3">Q1 - Seperability</a></li><li><a href="#4">handBW image</a></li><li><a href="#5">Class seperation</a></li><li><a href="#6">Q2 - Multiple thresholding results</a></li><li><a href="#7">Scatterplot ot three RGB hands.</a></li><li><a href="#8">Red channel histogram</a></li><li><a href="#9">Green channel histogram</a></li><li><a href="#10">Blue channel histogram</a></li><li><a href="#11">Training Areas</a></li><li><a href="#12">Select G and B as features and split into training data.</a></li><li><a href="#13">Classify data</a></li><li><a href="#14">Linear Discriminant Analysis</a></li></ul></div><h2 id="1">Load Data</h2><p>Let's load the synthetic datasets.</p><pre class="codeinput">clear;
+load <span class="string">lab4/codes/cdata</span>;
+addpath <span class="string">lab4/codes</span>;
+</pre><h2 id="2">Scatterplot of the data</h2><pre class="codeinput">figure;
+plot(cdata(:,1),cdata(:,2),<span class="string">'.'</span>);
+</pre><img vspace="5" hspace="5" src="lab4_01.png" alt=""> <h2 id="3">Q1 - Seperability</h2><p>From the plot above, it seems likely that there are two classes present. Using only one feature is not enough to seperate the two classes. This is due to the fact that if you reduce the data to one dimension, the classes will overlap.</p><h2 id="4">handBW image</h2><pre class="codeinput">I = imread(<span class="string">'lab4/codes/handBW.pnm'</span>); <span class="comment">% Read the image</span>
+figure; imshow(I); <span class="comment">% Show the image</span>
+figure; imhist(I); <span class="comment">% Show the histogram</span>
+</pre><img vspace="5" hspace="5" src="lab4_02.png" alt=""> <img vspace="5" hspace="5" src="lab4_03.png" alt=""> <h2 id="5">Class seperation</h2><p>From the histogram, we see that it looks bimodal. We can try to seperate the three classes in the image using thresholding.</p><pre class="codeinput">figure;
+t = multithresh(I, 2);
+mtresh(I, 76, 131); colormap(gray); colorbar();
+</pre><img vspace="5" hspace="5" src="lab4_04.png" alt=""> <h2 id="6">Q2 - Multiple thresholding results</h2><p>We see that multiple thresholding is somewhat able to seperate the background and foreground and struggles to seperate the hand and the object. Also, the background has a pattern that gets missplaced as foreground. This makes sense given the observed histogram and it's bimodal distribution.</p><h2 id="7">Scatterplot ot three RGB hands.</h2><pre class="codeinput">I2 = imread(<span class="string">'lab4/codes/hand.pnm'</span>); <span class="comment">% Read the image</span>
+figure;
+imshow(I2); <span class="comment">% Show the image</span>
+
+R = I2(:,:,1); <span class="comment">% Separate the three layers, RGB</span>
+G = I2(:,:,2);
+B = I2(:,:,3);
+
+figure;
+plot3(R(:),G(:),B(:),<span class="string">'.'</span>) <span class="comment">% 3D scatterplot of the RGB data</span>
+</pre><img vspace="5" hspace="5" src="lab4_05.png" alt=""> <img vspace="5" hspace="5" src="lab4_06.png" alt=""> <h2 id="8">Red channel histogram</h2><pre class="codeinput">figure; imhist(R);
+</pre><img vspace="5" hspace="5" src="lab4_07.png" alt=""> <h2 id="9">Green channel histogram</h2><pre class="codeinput">figure; imhist(G);
+</pre><img vspace="5" hspace="5" src="lab4_08.png" alt=""> <h2 id="10">Blue channel histogram</h2><pre class="codeinput">figure; imhist(B);
+</pre><img vspace="5" hspace="5" src="lab4_09.png" alt=""> <h2 id="11">Training Areas</h2><pre class="codeinput">label_im = imread(<span class="string">'lab4/codes/hand_training.png'</span>); <span class="comment">% Read image with labels</span>
+figure;
+imagesc(label_im); <span class="comment">% View the training areas</span>
+</pre><img vspace="5" hspace="5" src="lab4_10.png" alt=""> <h2 id="12">Select G and B as features and split into training data.</h2><pre class="codeinput">I3(:,:,1) = G; <span class="comment">% Create an image with two bands/features</span>
+I3(:,:,2) = B;
+[data,class] = create_training_data(I3,label_im); <span class="comment">% Arrange the training data into vectors</span>
+figure;
+scatterplot2D(data,class); <span class="comment">% View the training feature vectors</span>
+</pre><img vspace="5" hspace="5" src="lab4_11.png" alt=""> <h2 id="13">Classify data</h2><pre class="codeinput">Itest = im2testdata(I3); <span class="comment">% Reshape the image before classification</span>
+C = classify(double(Itest), double(data), double(class)); <span class="comment">% Train classifier and classify the data</span>
+ImC = class2im(C, size(I3,1), size(I3,2)); <span class="comment">% Reshape the classification to an image</span>
+figure; imagesc(ImC); <span class="comment">% View the classification result</span>
+</pre><img vspace="5" hspace="5" src="lab4_12.png" alt=""> <h2 id="14">Linear Discriminant Analysis</h2><p>There are several assumptions made about the data when using Linear Discriminant Analysis. These are:</p><p><b>Multivariate Normality:</b> Independent variables are normal.</p><p><b>Homogeneity of variance:</b> Variances among group variables are the same across levels of predictors.</p><p><b>Multicollinearity:</b></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Computer Exercise 4 - Group 17
+%
+
+%% Load Data
+% Let's load the synthetic datasets.
+clear;
+load lab4/codes/cdata;
+addpath lab4/codes;
+
+%% Scatterplot of the data
+%
+figure;
+plot(cdata(:,1),cdata(:,2),'.');
+
+%% Q1 - Seperability
+% From the plot above, it seems likely that there are two classes present.
+% Using only one feature is not enough to seperate the two classes. This is
+% due to the fact that if you reduce the data to one dimension, the classes
+% will overlap.
+
+%% handBW image
+%
+I = imread('lab4/codes/handBW.pnm'); % Read the image
+figure; imshow(I); % Show the image
+figure; imhist(I); % Show the histogram
+
+%% Class seperation
+% From the histogram, we see that it looks bimodal. We can try to seperate
+% the three classes in the image using thresholding.
+figure;
+t = multithresh(I, 2);
+mtresh(I, 76, 131); colormap(gray); colorbar();
+
+%% Q2 - Multiple thresholding results
+% We see that multiple thresholding is somewhat able to seperate the
+% background and foreground and struggles to seperate the hand and the
+% object. Also, the background has a pattern that gets missplaced as
+% foreground. This makes sense given the observed histogram and it's
+% bimodal distribution.
+
+%% Scatterplot ot three RGB hands.
+%
+I2 = imread('lab4/codes/hand.pnm'); % Read the image
+figure;
+imshow(I2); % Show the image
+
+R = I2(:,:,1); % Separate the three layers, RGB
+G = I2(:,:,2);
+B = I2(:,:,3);
+
+figure;
+plot3(R(:),G(:),B(:),'.') % 3D scatterplot of the RGB data
+
+%% Red channel histogram
+%
+figure; imhist(R);
+
+
+%% Green channel histogram
+%
+figure; imhist(G);
+
+%% Blue channel histogram
+%
+figure; imhist(B);
+
+%% Training Areas
+% 
+label_im = imread('lab4/codes/hand_training.png'); % Read image with labels
+figure;
+imagesc(label_im); % View the training areas
+
+%% Select G and B as features and split into training data.
+%
+I3(:,:,1) = G; % Create an image with two bands/features
+I3(:,:,2) = B;
+[data,class] = create_training_data(I3,label_im); % Arrange the training data into vectors
+figure;
+scatterplot2D(data,class); % View the training feature vectors
+
+%% Classify data
+%
+Itest = im2testdata(I3); % Reshape the image before classification
+C = classify(double(Itest), double(data), double(class)); % Train classifier and classify the data
+ImC = class2im(C, size(I3,1), size(I3,2)); % Reshape the classification to an image
+figure; imagesc(ImC); % View the classification result
+
+%% Linear Discriminant Analysis
+% There are several assumptions made about the data when using Linear
+% Discriminant Analysis. These are:
+%
+% *Multivariate Normality:* Independent variables are normal.
+%
+% *Homogeneity of variance:* Variances among group variables are the same across levels of predictors.
+%
+% *Multicollinearity:*
+##### SOURCE END #####
+--></body></html>

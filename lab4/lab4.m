@@ -158,4 +158,69 @@ figure; imagesc(ImC); colormap(gray); colorbar(); % View the classification resu
 
 
 %% Classification of multispectral data
-%
+%%%Load data
+load lab4/codes/landsat_data.mat
+
+%%Show image
+figure(1);imshow(landsat_data(:,:,[3,2,1])./255);
+
+%%Create test data
+T = zeros(512,512); % Create an empty image
+T(440:512,150:215) = 1; % forest
+T(488:512,20:70) = 2; % water
+T(125:190,30:117) = 3; % urban
+T(1:40,1:80) = 4; % agri
+
+%%Show train classifier
+figure(2);
+imagesc(T);
+
+%%Investigate usable bands
+[data,class] = create_training_data(landsat_data(:,:,[1,2]),T);
+figure(3);
+scatterplot2D(data,class);
+[data,class] = create_training_data(landsat_data(:,:,[3,4]),T);
+figure(4);
+scatterplot2D(data,class);
+[data,class] = create_training_data(landsat_data(:,:,[5,6]),T);
+figure(5);
+scatterplot2D(data,class);
+[data,class] = create_training_data(landsat_data(:,:,[5,7]),T);
+figure(6);
+scatterplot2D(data,class);
+%We can see that bands 1 and 2 are very usefult to detect class 2 (water),
+%bands 3,4,5,6,7 detects class 1 (forest) pretty well. Classes 3 (urban)
+%and 4 (agricultural) significantly overlap in all bands, but potentially
+%the best ones to classify it are bands 4 and 6
+
+
+%%Create selected bands training vectors
+[data,class] = create_training_data(landsat_data(:,:,[1,2,4,6]),T);
+
+%%Classify data based on selected bands, which are good for classes 1,2
+Itest = im2testdata(landsat_data(:,:,[1,2,4,6]));
+C = classify(Itest,data,class);
+ImC = class2im(C, size(landsat_data,1), size(landsat_data,2)); % Reshape the classification to an image
+figure(7); imagesc(ImC); % View the classification result
+
+%%Create all bands training vectors
+[data,class] = create_training_data(landsat_data,T);
+
+%%Classify data based on selected bands
+Itest = im2testdata(landsat_data);
+C = classify(Itest,data,class);
+ImC = class2im(C, size(landsat_data,1), size(landsat_data,2)); % Reshape the classification to an image
+figure(8); imagesc(ImC); % View the classification result
+
+%%Q5 - There are no visible differences in classification based on selected or
+%all bands. It is easy to select water and forest classes, while
+%agriculutral and urban overlap significantly more.This deopends on the
+%physical properties of the surfaces and which bands does it reflect or
+%scatter better. For example water has very specific properties comparing
+%to harder surfaces and therefore it is the easiest to detect it.
+
+%%Q6 - Not including some of the bands may be useful to reduce computational
+%resources. In case of linear classifiers it is usually not very important
+% to remove unimportant bands as it would just have lower weight ratings.
+% But for some classifiers it may reduce the impact of 'good' bands and
+% therefore reduce the classification accuracy

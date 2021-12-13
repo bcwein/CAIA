@@ -1,6 +1,7 @@
 %% Read image and template from disk
 
 % Read image
+clear;
 I = imread('viruses.tif');
 
 % Read template
@@ -118,5 +119,5 @@ keep('I','template','mask','cutouts','nrOfObjects');%'objectMap');
 % Place for your own texture analysis. 
 
 
-
-
+%%
+figure;imshow(cutouts{1})

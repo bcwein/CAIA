@@ -6,6 +6,7 @@
 clear;
 load lab4/codes/cdata;
 addpath lab4/codes;
+load landsat_data;
 
 %% Scatterplot of the data
 %
@@ -156,6 +157,52 @@ C = classify(double(Itest), double(data), double(class)); % Train classifier and
 ImC = class2im(C, size(I3,1), size(I3,2)); % Reshape the classification to an image
 figure; imagesc(ImC); colormap(gray); colorbar(); % View the classification result
 
-
 %% Classification of multispectral data
+%
+T = zeros(512,512); % Create an empty image
+T(430:500, 150:220) = 1; % Class 1 - Forest
+T(130:185, 55:110) = 2; % Class 2 - City
+T(290:370, 330:410) = 3; % Class 3 - Agricultural area
+figure;
+imagesc(T);
+
+figure;
+imagesc(landsat_data(:,:,1));
+
+%% Find appropriate band
+% 
+figure;
+imshow(landsat_data(:,:,[1, 3, 4])./255);
+
+%% Band 1, 3 and 4 - Linear Discriminant Type
+%
+clear I3;
+I3(:,:,1) = landsat_data(:, :, 1);
+I3(:,:,2) = landsat_data(:, :, 3);
+I3(:,:,3) = landsat_data(:, :, 4);
+[data,class] = create_training_data(I3, T); % Arrange the training data into vectors
+
+Itest = im2testdata(I3); % Reshape the image before classification
+C = classify(double(Itest), double(data), double(class)); % Train classifier and classify the data
+ImC = class2im(C, size(I3,1), size(I3,2)); % Reshape the classification to an image
+figure; imagesc(ImC); colormap(gray); colorbar(); % View the classification result
+
+
+%% Band 1, 3 and 4 - Quadtratic Discriminant Type
+%
+clear I3;
+I3(:,:,1) = landsat_data(:, :, 1);
+I3(:,:,2) = landsat_data(:, :, 3);
+I3(:,:,3) = landsat_data(:, :, 4);
+[data,class] = create_training_data(I3, T); % Arrange the training data into vectors
+
+figure;
+scatterplot2D(data,class); % View the training feature vectors
+
+Itest = im2testdata(I3); % Reshape the image before classification
+C = classify(double(Itest), double(data), double(class), 'quadratic'); % Train classifier and classify the data
+ImC = class2im(C, size(I3,1), size(I3,2)); % Reshape the classification to an image
+figure; imagesc(ImC); colormap(gray); colorbar(); % View the classification result
+
+%% Classification based on texture
 %
